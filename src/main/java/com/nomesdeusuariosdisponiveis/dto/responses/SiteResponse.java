@@ -16,10 +16,9 @@ public class SiteResponse {
 	private String name;
 	private String url;
 	private boolean available;
-	private String message;
 
-	public static SiteResponse toResponse(String service, String url, boolean available, String message) {
-		return SiteResponse.builder().name(service).url(url).available(available).message(null).build();
+	public static SiteResponse toResponse(String service, String url, boolean available) {
+		return SiteResponse.builder().name(service).url(url).available(available).build();
 	}
 
 }

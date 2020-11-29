@@ -1,0 +1,51 @@
+[
+    {
+		"service": "Instagram",
+		"url": "https://www.instagram.com/{}/?__a=1",
+		"urlRegister": "https://www.instagram.com/{}",
+		"errorType": 0,
+		"errorMsg": null
+	},
+	{
+		"service": "Facebook",
+		"url": "https://graph.facebook.com/{}",
+		"urlRegister": "https://www.facebook.com/{}",
+		"errorType": 1,
+		"errorMsg": "not exist"
+	},
+	{
+		"service": "Twitter",
+		"url": "https://twitter.com/users/username_available?username={}",
+		"urlRegister": "https://twitter.com/{}",
+		"errorType": 0,
+		"errorMsg": null
+	},
+	{
+		"service": "Pinterest",
+		"url": "https://www.pinterest.com/{}/",
+		"urlRegister": "https://www.pinterest.com/{}/",
+		"errorType": 0,
+		"errorMsg": null
+	},
+	{
+		"service": "Domain.com.br",
+		"url": "http://www.{}.com.br",
+		"urlRegister": "http://www.{}.com.br",
+		"errorType": 0,
+		"errorMsg": null
+	},
+	{
+		"service": "Domain.com",
+		"url": "http://www.{}.com",
+		"urlRegister": "http://www.{}.com",
+		"errorType": 0,
+		"errorMsg": null
+	},
+	{
+		"service": "Domain.net",
+		"url": "http://www.{}.net",
+		"urlRegister": "http://www.{}.net",
+		"errorType": 0,
+		"errorMsg": null
+	}
+]

@@ -1,18 +1,26 @@
 package com.nomesdeusuariosdisponiveis.repositories.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Optional;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.nomesdeusuariosdisponiveis.dto.responses.SiteResponse;
-import com.nomesdeusuariosdisponiveis.entities.Site;
-import com.nomesdeusuariosdisponiveis.repositories.SiteRepository;
+import com.nomesdeusuariosdisponiveis.dtos.SiteDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,47 +30,73 @@ public class SiteRepositoryImpl {
 
 	private static final String FAILED_TO_GET_ALL_BY_SERVICE_NAME = "Failed to get all by service name";
 
-	@Autowired
-	private SiteRepository siteRepository;
-
 	public List<SiteResponse> verifyStatus(String userName) {
+		List<SiteResponse> sitesResponses = new ArrayList<>();
+
 		try {
-			List<SiteResponse> sitesResponses = new ArrayList<>();
-			List<Site> sites = siteRepository.findAll();
+			List<SiteDTO> sites = readJson();
 
-			for (Site site : sites) {
+			for (SiteDTO site : sites) {
 				String url = site.getUrl().replace("{}", userName);
-				HttpResponse<String> response = Unirest.get(url).header("Connection", "keep-alive")
-						.header("Upgrade-Insecure-Requests", "1")
-						.header("User-Agent", site.getUserAgent() != null ? site.getUserAgent()
-								: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
-						.header("Accept",
-								"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-						.header("Accept-Encoding", "gzip, deflate").header("Accept-Language", "en-US;q=1").asString();
 
-				boolean available = false;
+				HttpResponse<String> response = getResponse(site, url);
 
-				if (site.getErrorType() == 0) {
-					if (response.getStatus() != 200) {
-						available = true;
-					}
-				} else if (site.getErrorType() == 1) {
-					if (response.getBody().contains(site.getErrorMsg())) {
-						available = true;
-					}
-				} else if (site.getErrorType() == 2) {
-					if (response.getStatus() != 200 && response.getBody().contains(site.getErrorMsg())) {
-						available = true;
-					}
-				}
-				sitesResponses.add(SiteResponse.toResponse(site.getService(), url, available, null));
+				boolean available = checkAvailable(site, response);
+
+				sitesResponses.add(SiteResponse.toResponse(site.getService(),
+						site.getUrlRegister().replace("{}", userName), available));
 			}
 
 			return sitesResponses;
 		} catch (Exception e) {
 			log.error(FAILED_TO_GET_ALL_BY_SERVICE_NAME, e);
-			return Arrays.asList(SiteResponse.toResponse(null, null, false, e.getMessage()));
+			return Arrays.asList(SiteResponse.toResponse(null, null, false));
 		}
+	}
+
+	private boolean checkAvailable(SiteDTO site, HttpResponse<String> response) {
+		boolean available = false;
+
+		switch (site.getErrorType()) {
+		case 0:
+			if (response == null || response.getStatus() != 200) {
+				available = true;
+			}
+			break;
+		case 1:
+			if (response.getBody().contains(site.getErrorMsg())) {
+				available = true;
+			}
+			break;
+		}
+		return available;
+	}
+
+	private HttpResponse<String> getResponse(SiteDTO site, String url) throws UnirestException {
+		try {
+			HttpClient httpClient = HttpClients.custom().disableCookieManagement().build();
+			Unirest.setHttpClient(httpClient);
+			HttpResponse<String> response = Unirest.get(url).header("Connection", "keep-alive")
+					.header("Upgrade-Insecure-Requests", "1")
+					.header("User-Agent",
+							"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
+					.header("Accept",
+							"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+					.header("Accept-Encoding", "gzip, deflate").header("Accept-Language", "en-US;q=1").asString();
+			return response;
+		} catch (Exception e) {
+			if (site.getService().contains("Domain")) {
+				return null;
+			}
+		}
+		return null;
+	}
+
+	private List<SiteDTO> readJson() throws JsonParseException, JsonMappingException, IOException {
+		InputStream in = SiteRepositoryImpl.class.getResourceAsStream("sitesInfo.json");
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(in, new TypeReference<List<SiteDTO>>() {
+		});
 	}
 
 }

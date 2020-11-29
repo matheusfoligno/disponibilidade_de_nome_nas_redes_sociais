@@ -33,7 +33,7 @@ public class SiteResource {
 			@ApiResponse(code = 400, message = "Your request has invalid information or structure"),
 			@ApiResponse(code = 404, message = "Request not found"),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@GetMapping("/{username}")
+	@GetMapping("{username}")
 	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseEntity<List<SiteResponse>> getSitesStatusByUserName(
 			@ApiParam(name = "username", required = true, value = "username") @PathVariable(name = "username") final String userName) {
