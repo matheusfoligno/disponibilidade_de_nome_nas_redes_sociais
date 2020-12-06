@@ -54,11 +54,14 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.konghq/unirest-java -->
 		<dependency>
-			<groupId>com.mashape.unirest</groupId>
+			<groupId>com.konghq</groupId>
 			<artifactId>unirest-java</artifactId>
-			<version>1.4.9</version>
+			<version>3.11.05</version>
+			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -66,6 +69,31 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<jvmArguments>-XX:+UseSerialGC</jvmArguments>
+					<jvmArguments>-Xss512k</jvmArguments>
+					<jvmArguments>-XX:MaxRAM=130m</jvmArguments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${build.directory}/classes/static/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>../front-nomedeusuariosdisponiveis/dist</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

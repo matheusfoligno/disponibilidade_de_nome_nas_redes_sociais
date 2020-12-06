@@ -7,6 +7,13 @@
 		"errorMsg": null
 	},
 	{
+		"service": "Youtube",
+		"url": "https://www.youtube.com/{}",
+		"urlRegister": "https://www.youtube.com/{}/",
+		"errorType": 0,
+		"errorMsg": null
+	},
+	{
 		"service": "Facebook",
 		"url": "https://graph.facebook.com/{}",
 		"urlRegister": "https://www.facebook.com/{}",

@@ -1,29 +1,29 @@
 package com.nomesdeusuariosdisponiveis.repositories.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.nomesdeusuariosdisponiveis.dto.responses.SiteResponse;
 import com.nomesdeusuariosdisponiveis.dtos.SiteDTO;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import lombok.extern.slf4j.Slf4j;
 
+@Lazy
 @Slf4j
 @Service
 public class SiteRepositoryImpl {
@@ -75,7 +75,7 @@ public class SiteRepositoryImpl {
 	private HttpResponse<String> getResponse(SiteDTO site, String url) throws UnirestException {
 		try {
 			HttpClient httpClient = HttpClients.custom().disableCookieManagement().build();
-			Unirest.setHttpClient(httpClient);
+			Unirest.config().httpClient(httpClient);
 			HttpResponse<String> response = Unirest.get(url).header("Connection", "keep-alive")
 					.header("Upgrade-Insecure-Requests", "1")
 					.header("User-Agent",
