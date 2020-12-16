@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class SiteRepositoryImpl {
 
+	private static final String SITES_INFO_JSON = "sitesInfo.json";
+	private static final String DOMAIN = "Domain";
 	private static final String FAILED_TO_GET_ALL_BY_SERVICE_NAME = "Failed to get all by service name";
 
 	public List<SiteResponse> verifyStatus(String userName) {
@@ -74,8 +74,6 @@ public class SiteRepositoryImpl {
 
 	private HttpResponse<String> getResponse(SiteDTO site, String url) throws UnirestException {
 		try {
-			HttpClient httpClient = HttpClients.custom().disableCookieManagement().build();
-			Unirest.config().httpClient(httpClient);
 			HttpResponse<String> response = Unirest.get(url).header("Connection", "keep-alive")
 					.header("Upgrade-Insecure-Requests", "1")
 					.header("User-Agent",
@@ -85,7 +83,7 @@ public class SiteRepositoryImpl {
 					.header("Accept-Encoding", "gzip, deflate").header("Accept-Language", "en-US;q=1").asString();
 			return response;
 		} catch (Exception e) {
-			if (site.getService().contains("Domain")) {
+			if (site.getService().contains(DOMAIN)) {
 				return null;
 			}
 		}
@@ -93,7 +91,7 @@ public class SiteRepositoryImpl {
 	}
 
 	private List<SiteDTO> readJson() throws JsonParseException, JsonMappingException, IOException {
-		InputStream in = SiteRepositoryImpl.class.getResourceAsStream("sitesInfo.json");
+		InputStream in = SiteRepositoryImpl.class.getResourceAsStream(SITES_INFO_JSON);
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.readValue(in, new TypeReference<List<SiteDTO>>() {
 		});
