@@ -19,9 +19,9 @@ Obs: Como foi feito deploy no Heroku na versão gratis, pode acontecer da aplica
  - Swagger: https://api-checarnomeusuarios.herokuapp.com/swagger-ui.html
 ```bash
 # clonar o repositório:
-git clone https://github.com/matheusfoligno/disponibilidade_de_nome_nas_redes_sociais
+git clone https://github.com/matheusfoligno/disponibilidade_de_nome_nas_redes_sociais.git
 
-# Dentro da pasta do projeto, execute o comando:
+# dentro da pasta do projeto, execute o comando:
 ./mvnw spring-boot:run
 ```
 ## Tecnologias utilizadas:
