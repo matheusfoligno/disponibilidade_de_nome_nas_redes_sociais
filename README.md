@@ -5,7 +5,7 @@
 https://checarnomeusuario.com.br/
 
 O projeto tem como finalidade facilitar a busca por nomes de usuários nas redes sociais, você escolhe o nome que quer dar para sua marca e retornamos 
-para você quais redes sociais estão disponiveis.
+para você quais redes sociais estão disponíveis.
 
 Front-end: https://github.com/matheusfoligno/front_disponibilidade_de_nome_nas_redes_sociais
 
