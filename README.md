@@ -9,7 +9,7 @@ para você quais redes sociais estão disponíveis.
 
 Front-end: https://github.com/matheusfoligno/front_disponibilidade_de_nome_nas_redes_sociais
 
-Obs: Como foi feito deploy no Heroku na versão gratis, pode acontecer da aplicação estar "dormindo" e demorar um pouco na primeira busca.
+Obs: Como foi feito deploy no Heroku na versão grátis, pode acontecer da aplicação estar "dormindo" e demorar um pouco na primeira busca.
 
 ## Pré-requisitos:
 - Java 8
